@@ -17,11 +17,11 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            asset: AntiQueta.IA-windows.exe
+            asset: AntiQueta-Windows.exe
           - os: macos-latest
-            asset: AntiQueta.IA-macos.zip
+            asset: AntiQueta-Mac.zip
           - os: ubuntu-latest
-            asset: AntiQueta.IA-linux.tar.gz
+            asset: AntiQueta-Linux.tar.gz
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

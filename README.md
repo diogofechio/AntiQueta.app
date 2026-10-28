@@ -7,9 +7,9 @@ recomprimir e sem alterar os pixels**. Nada sai do seu computador.
 ## Como usar
 
 1. Baixe a versão do seu sistema na página de [Releases](../../releases/latest):
-   - **Windows:** `AntiQueta.IA-windows.exe`
-   - **macOS:** `AntiQueta.IA-macos.zip` (descompacte)
-   - **Linux:** `AntiQueta.IA-linux.tar.gz` (descompacte)
+   - **Windows:** `AntiQueta-Windows.exe`
+   - **macOS:** `AntiQueta-Mac.zip` (descompacte)
+   - **Linux:** `AntiQueta-Linux.tar.gz` (descompacte)
 2. Abra o arquivo com dois cliques. O app abre sozinho no navegador.
 3. Arraste até 5 imagens, confira o que cada uma revela e clique em
    **Remover metadados de todas**. Depois é só baixar.
