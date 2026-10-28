@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AntiQueta.IA · Remova metadados e o selo "Feito com IA"</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f5bea' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1'/%3E%3Cpath d='M3 21 21 3' stroke='%23a1300c'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #16181d; --muted: #5d6470; --line: #e3e6eb;
+    --accent: #2f5bea; --accent-text: #ffffff; --ok: #1d7a46; --ok-bg: #e7f6ee;
+    --ai: #a1300c; --ai-bg: #fdece6; --loc: #8a5a00; --loc-bg: #fdf3dc;
+    --dev: #3d4fa6; --dev-bg: #e9ecfb; --id: #6b3fa0; --id-bg: #f1e9fb; --kept-bg: #eef0f3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111317; --card: #1a1d23; --text: #e8eaee; --muted: #9aa1ad; --line: #2b2f37;
+      --accent: #6f8fff; --accent-text: #0d1020; --ok: #6fd39b; --ok-bg: #16301f;
+      --ai: #ff9a78; --ai-bg: #3a1d14; --loc: #f2c25c; --loc-bg: #33280f;
+      --dev: #9fb0ff; --dev-bg: #1f2546; --id: #c9a6f5; --id-bg: #2b1f3d; --kept-bg: #23262d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; }
+  h1 .logo { width: 30px; height: 30px; flex: none; color: var(--accent); }
+  h1 .logo .cut { stroke: var(--ai); }
+  h1 .ia { color: var(--accent); }
+  .tagline { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
+  .lead { color: var(--muted); margin: 0 0 24px; }
+  .drop { border: 2px dashed var(--line); border-radius: 14px; background: var(--card);
+          padding: 36px 16px; text-align: center; cursor: pointer; transition: border-color .15s; }
+  .drop.over, .drop:hover { border-color: var(--accent); }
+  .drop strong { display: block; font-size: 17px; margin-bottom: 4px; }
+  .drop span { color: var(--muted); font-size: 13px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin: 16px 0; }
+  label.opt { color: var(--muted); font-size: 14px; display: flex; gap: 6px; align-items: center; }
+  button, .btn { font: inherit; border: 0; border-radius: 9px; padding: 9px 16px; cursor: pointer;
+                 background: var(--accent); color: var(--accent-text); font-weight: 600; text-decoration: none;
+                 display: inline-block; }
+  button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); font-weight: 500; }
+  button:disabled { opacity: .5; cursor: default; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 16px; }
+  .head { display: flex; gap: 14px; align-items: center; }
+  .thumb { width: 72px; height: 72px; border-radius: 10px; object-fit: cover; background: var(--kept-bg); flex: none; }
+  .name { font-weight: 600; word-break: break-all; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 99px; }
+  .ai { background: var(--ai-bg); color: var(--ai); }
+  .location { background: var(--loc-bg); color: var(--loc); }
+  .device { background: var(--dev-bg); color: var(--dev); }
+  .identity { background: var(--id-bg); color: var(--id); }
+  .kept { background: var(--kept-bg); color: var(--muted); }
+  .none { background: var(--ok-bg); color: var(--ok); }
+  .alert { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: var(--ai-bg); color: var(--text); }
+  .alert h3 { margin: 0 0 6px; font-size: 15px; color: var(--ai); }
+  .alert ul { margin: 0; padding-left: 18px; }
+  .alert li { margin: 3px 0; word-break: break-word; }
+  .alert code { font-size: 12.5px; }
+  details { margin-top: 12px; }
+  summary { cursor: pointer; color: var(--muted); font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; table-layout: fixed; }
+  td { border-top: 1px solid var(--line); padding: 6px 6px; vertical-align: top; word-break: break-word; }
+  td.g { width: 16%; color: var(--muted); }
+  td.n { width: 28%; font-weight: 500; }
+  td .val { max-height: 7.5em; overflow: auto; white-space: pre-wrap; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; align-items: center; }
+  .result { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: var(--ok-bg); color: var(--ok); }
+  .result p { margin: 2px 0; color: var(--text); }
+  .result strong { color: var(--ok); }
+  .error { margin-top: 12px; color: var(--ai); }
+  footer { margin-top: 40px; color: var(--muted); font-size: 13px; }
+  footer p { margin: 6px 0; }
+  a { color: var(--accent); }
+  @media (max-width: 560px) { td.g { display: none; } td.n { width: 38%; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>
+    <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
+      <circle cx="7.5" cy="7.5" r="1"/>
+      <path class="cut" d="M3 21 21 3"/>
+    </svg>
+    <span>AntiQueta<span class="ia">.IA</span></span>
+  </h1>
+  <p class="tagline">Tire a etiqueta das suas imagens.</p>
+  <p class="lead">Remova EXIF, GPS, IPTC, XMP e credenciais C2PA ("Feito com IA") das suas imagens, sem recomprimir nem alterar os pixels. Tudo roda no seu computador.</p>
+
+  <div class="drop" id="drop" tabindex="0" role="button" aria-label="Escolher imagens">
+    <strong>Solte suas imagens aqui para descobrir o que elas revelam</strong>
+    <span>JPEG, PNG, WebP (TIFF e HEIC com exiftool) · até 5 imagens · até 100 MB</span>
+    <input type="file" id="picker" accept="image/jpeg,image/png,image/webp,image/tiff,image/heic,image/heif,.heic,.heif,.tif,.tiff" multiple hidden>
+  </div>
+
+  <div class="bar" id="bar" hidden>
+    <label class="opt"><input type="checkbox" id="keepOrientation" checked> Manter a orientação da foto (evita que ela apareça girada)</label>
+    <label class="opt"><input type="checkbox" id="maxRemoval"> Remoção máxima (tira também o perfil de cor)</label>
+    <div class="actions" style="margin:0">
+      <button class="ghost" id="reset">Limpar lista</button>
+      <button id="cleanAll">Remover metadados de todas</button>
+    </div>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    <p>Privacidade: as imagens são processadas apenas na memória deste computador e nunca saem dele. Nada é gravado em disco até você baixar o resultado.</p>
+    <p>Limite: marcas d'água visíveis ou embutidas nos pixels (como SynthID) não são metadados e não são removidas.</p>
+  </footer>
+</main>
+
+<script>
+const MAX_FILES = 5, MAX_BYTES = 100 * 1024 * 1024;
+const LABELS = { ai: "IA", location: "Localização", device: "Aparelho", identity: "Autoria" };
+const items = [];
+const $ = (id) => document.getElementById(id);
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") node.className = v; else if (k === "text") node.textContent = v; else node.setAttribute(k, v);
+  }
+  for (const c of children) if (c != null) node.append(c);
+  return node;
+}
+
+function fmtBytes(n) {
+  if (n < 1024) return n + " B";
+  if (n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
+  return (n / 1024 / 1024).toFixed(2) + " MB";
+}
+
+async function post(path, item, extraHeaders = {}) {
+  const res = await fetch(path, {
+    method: "POST", body: item.file,
+    headers: { "X-Filename": encodeURIComponent(item.file.name), ...extraHeaders },
+  });
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error || "Falha");
+  return body;
+}
+
+function addFiles(files) {
+  for (const file of files) {
+    if (items.length >= MAX_FILES) { alertInline(`Máximo de ${MAX_FILES} imagens por vez.`); break; }
+    const item = { file, id: crypto.randomUUID(), info: null, result: null, error: null };
+    if (file.size > MAX_BYTES) item.error = "Arquivo maior que 100 MB.";
+    items.push(item);
+    render(item);
+    if (!item.error) inspect(item);
+  }
+  $("bar").hidden = items.length === 0;
+}
+
+function alertInline(msg) {
+  const n = el("p", { class: "error", text: msg });
+  $("list").prepend(n);
+  setTimeout(() => n.remove(), 4000);
+}
+
+async function inspect(item) {
+  try { item.info = await post("/api/inspect", item); }
+  catch (e) { item.error = e.message; }
+  render(item);
+}
+
+async function clean(item) {
+  if (!item.info || item.result) return;
+  item.busy = true; render(item);
+  try {
+    item.result = await post("/api/clean", item, { "X-Keep-Orientation": $("keepOrientation").checked ? "1" : "0",
+      "X-Keep-ICC": $("maxRemoval").checked ? "0" : "1" });
+    const bytes = Uint8Array.from(atob(item.result.data), (c) => c.charCodeAt(0));
+    item.url = URL.createObjectURL(new Blob([bytes], { type: item.file.type || "application/octet-stream" }));
+    delete item.result.data;
+  } catch (e) { item.error = e.message; }
+  item.busy = false; render(item);
+}
+
+function chips(summary) {
+  const box = el("div", { class: "chips" });
+  if (summary.removable === 0) box.append(el("span", { class: "chip none", text: "Nenhum metadado removível" }));
+  else box.append(el("span", { class: "chip kept", text: `${summary.removable} metadados` }));
+  for (const k of ["ai", "location", "device", "identity"])
+    if (summary[k]) box.append(el("span", { class: "chip " + k, text: `${LABELS[k]}: ${summary[k]}` }));
+  return box;
+}
+
+function tagTable(tags) {
+  const table = el("table");
+  for (const t of tags) {
+    const val = el("div", { class: "val", text: t.value });
+    if (t.map) val.append(" ", el("a", { href: t.map, target: "_blank", rel: "noopener noreferrer", text: "ver no mapa" }));
+    const badge = t.kept ? el("span", { class: "chip kept", text: "mantido", title: t.reason || "" })
+      : t.flag ? el("span", { class: "chip " + t.flag, text: LABELS[t.flag], title: t.reason || "" }) : null;
+    table.append(el("tr", {},
+      el("td", { class: "g", text: t.group }),
+      el("td", { class: "n" }, t.name, badge ? " " : null, badge),
+      el("td", {}, val)));
+  }
+  return table;
+}
+
+function render(item) {
+  let card = document.querySelector(`[data-id="${item.id}"]`);
+  const fresh = el("div", { class: "card", "data-id": item.id });
+  if (!item.thumb) item.thumb = URL.createObjectURL(item.file);
+  const img = el("img", { class: "thumb", src: item.thumb, alt: "" });
+  img.onerror = () => { img.removeAttribute("src"); };
+  const info = el("div", {},
+    el("div", { class: "name", text: item.file.name }),
+    el("div", { class: "meta", text: [item.info?.format?.toUpperCase(), fmtBytes(item.file.size)].filter(Boolean).join(" · ") }));
+  if (item.info) info.append(chips(item.info.summary));
+  else if (!item.error) info.append(el("div", { class: "meta", text: "Analisando…" }));
+  fresh.append(el("div", { class: "head" }, img, info));
+
+  if (item.info) {
+    const tags = item.info.tags;
+    const ai = tags.filter((t) => t.flag === "ai" && !t.kept);
+    if (ai.length && !item.result) {
+      const list = el("ul");
+      for (const t of ai.slice(0, 12)) {
+        const v = t.value.length > 160 ? t.value.slice(0, 160) + "…" : t.value;
+        list.append(el("li", {}, el("strong", { text: t.reason }), el("br"),
+          el("code", { text: `${t.group} · ${t.name}: ${v}` })));
+      }
+      fresh.append(el("div", { class: "alert" },
+        el("h3", { text: `Sinais de IA encontrados (${ai.length})` }),
+        el("p", { style: "margin:0 0 6px", text: "Estas linhas são as que fazem redes como Instagram e Facebook mostrar o rótulo de IA:" }),
+        list));
+    }
+    const warn = tags.filter((t) => t.warning);
+    if (warn.length) fresh.append(el("div", { class: "alert" }, el("h3", { text: "Atenção" }),
+      ...warn.map((t) => el("p", { style: "margin:2px 0", text: t.value }))));
+    if (item.info.file?.length) {
+      const rows = item.info.file.map((f) => ({ group: "Arquivo", name: f.name, value: f.value }));
+      if (item.result) rows.push({ group: "Arquivo", name: "SHA-256 limpo", value: item.result.after.file.at(-1).value });
+      fresh.append(el("details", {}, el("summary", { text: "Informações do arquivo" }), tagTable(rows)));
+    }
+    if (!item.result && tags.length) {
+      const d = el("details", {}, el("summary", { text: `Ver todos os ${tags.length} itens encontrados` }), tagTable(tags));
+      fresh.append(d);
+    }
+    const actions = el("div", { class: "actions" });
+    if (item.result) {
+      const after = item.result.after.summary;
+      const res = el("div", { class: "result" },
+        el("strong", { text: after.removable === 0 ? "✓ Metadados removidos" : `Restaram ${after.removable} metadados` }),
+        el("p", { text: `${item.result.removed} itens removidos · ${fmtBytes(item.result.size_before)} → ${fmtBytes(item.result.size_after)} · pixels inalterados` }));
+      const kept = item.result.after.tags.filter((t) => t.kept);
+      if (kept.length) res.append(el("p", { class: "meta", text: "Mantidos: " + kept.map((t) => `${t.name} (${t.reason})`).join("; ") }));
+      fresh.append(res);
+      if (after.removable) fresh.append(el("details", {}, el("summary", { text: "Ver o que restou" }), tagTable(item.result.after.tags.filter((t) => !t.kept))));
+      actions.append(el("a", { class: "btn", href: item.url, download: item.result.filename, text: "Baixar imagem limpa" }));
+    } else if (item.info.summary.removable > 0) {
+      const b = el("button", { text: item.busy ? "Limpando…" : "Remover todos os metadados" });
+      b.disabled = !!item.busy;
+      b.onclick = () => clean(item);
+      actions.append(b);
+    }
+    fresh.append(actions);
+  }
+  if (item.error) fresh.append(el("p", { class: "error", text: item.error }));
+  if (card) card.replaceWith(fresh); else $("list").append(fresh);
+}
+
+const drop = $("drop"), picker = $("picker");
+drop.onclick = () => picker.click();
+drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); picker.click(); } };
+picker.onchange = () => { addFiles(picker.files); picker.value = ""; };
+drop.ondragover = (e) => { e.preventDefault(); drop.classList.add("over"); };
+drop.ondragleave = () => drop.classList.remove("over");
+drop.ondrop = (e) => { e.preventDefault(); drop.classList.remove("over"); addFiles(e.dataTransfer.files); };
+$("cleanAll").onclick = () => items.forEach(clean);
+$("reset").onclick = () => {
+  for (const it of items) { URL.revokeObjectURL(it.thumb); if (it.url) URL.revokeObjectURL(it.url); }
+  items.length = 0; $("list").replaceChildren(); $("bar").hidden = true;
+};
+</script>
+</body>
+</html>

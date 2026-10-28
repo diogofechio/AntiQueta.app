@@ -1,10 +1,31 @@
-# Limpa Metadados
+# AntiQueta.IA
 
-Versão local, inspirada no DeleteFootprints.ai, para remover metadados de imagens
-(EXIF, GPS, IPTC, XMP, C2PA/"Feito com IA" e textos de PNG) **sem recomprimir e sem
-alterar os pixels**. Nada sai do seu computador.
+**Tire a etiqueta das suas imagens.** Remove o selo "Feito com IA" (C2PA), localização
+GPS, dados do aparelho e demais metadados (EXIF, IPTC, XMP, textos de PNG) **sem
+recomprimir e sem alterar os pixels**. Nada sai do seu computador.
 
-## Como rodar
+## Como usar
+
+1. Baixe a versão do seu sistema na página de [Releases](../../releases/latest):
+   - **Windows:** `AntiQueta.IA-windows.exe`
+   - **macOS:** `AntiQueta.IA-macos.zip` (descompacte)
+   - **Linux:** `AntiQueta.IA-linux.tar.gz` (descompacte)
+2. Abra o arquivo com dois cliques. O app abre sozinho no navegador.
+3. Arraste até 5 imagens, confira o que cada uma revela e clique em
+   **Remover metadados de todas**. Depois é só baixar.
+
+Uma janela de terminal fica aberta enquanto o app roda; feche-a para encerrar.
+
+**Na primeira vez**, o sistema pode avisar que o app é de um desenvolvedor não
+identificado (o executável não tem assinatura digital paga):
+
+- **Windows:** em "O Windows protegeu o computador", clique em **Mais informações** e
+  depois em **Executar assim mesmo**.
+- **macOS:** clique com o botão direito no app e escolha **Abrir**. Se não aparecer a
+  opção, vá em **Ajustes do Sistema › Privacidade e Segurança** e clique em
+  **Abrir Mesmo Assim**.
+
+## Rodar pelo código-fonte
 
 Precisa só do Python 3.9 ou mais novo, sem instalar nenhuma biblioteca.
 
@@ -61,3 +82,18 @@ tests/          testes (usam Pillow só para comparar pixels)
 ```
 
 Testes: `python3 -m unittest discover -s tests -t .` (com `pip install pillow`).
+
+## Gerar o executável
+
+Localmente: `pip install pyinstaller` e `python build.py` (o resultado fica em `dist/`).
+Se existir `assets/icone.ico` (Windows) ou `assets/icone.icns` (macOS), ele vira o ícone.
+
+Para publicar uma versão nova, crie e envie uma tag:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+O GitHub Actions ([.github/workflows/release.yml](.github/workflows/release.yml)) roda os
+testes, gera os executáveis de Windows, macOS e Linux e os anexa ao Release.

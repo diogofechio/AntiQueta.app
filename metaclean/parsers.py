@@ -10,6 +10,8 @@ import struct
 import zlib
 import xml.etree.ElementTree as ET
 
+from . import c2pa
+
 MAX_VALUE = 4000
 
 EXIF_NAMES = {
@@ -335,6 +337,12 @@ def _cbor_text_after(blob, key):
 
 def parse_c2pa(blob):
     tags = [tag("C2PA", "Manifesto C2PA (Content Credentials)", f"{len(blob)} bytes")]
+    try:
+        fields = c2pa.parse(blob)
+    except Exception:  # noqa: BLE001 - manifesto malformado: cai na leitura heurística
+        fields = []
+    if fields:
+        return tags + [tag("C2PA", f.pop("name"), f.pop("value"), **f) for f in fields]
     gen = _cbor_text_after(blob, b"\x6fclaim_generator")
     if gen:
         tags.append(tag("C2PA", "claim_generator", gen))

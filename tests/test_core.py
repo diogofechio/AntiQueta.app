@@ -135,5 +135,29 @@ class OrientationTest(unittest.TestCase):
         self.assertEqual(tiff_orientation(orientation_tiff(8)), 8)
 
 
+def _cbor_text(s):
+    b = s.encode()
+    return (bytes([0x60 + len(b)]) if len(b) < 24 else bytes([0x78, len(b)])) + b
+
+
+def _jumb(label, *children):
+    jumd = b"\0" * 16 + b"\x03" + label.encode() + b"\0"
+    body = struct.pack(">I", len(jumd) + 8) + b"jumd" + jumd + b"".join(children)
+    return struct.pack(">I", len(body) + 8) + b"jumb" + body
+
+
+class C2paDetailTest(unittest.TestCase):
+    def test_opens_manifest_fields(self):
+        from metaclean.parsers import parse_c2pa
+        actions = (b"\xa1" + _cbor_text("actions") + b"\x81\xa2" + _cbor_text("action") + _cbor_text("c2pa.created")
+                   + _cbor_text("digitalSourceType")
+                   + _cbor_text("http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"))
+        cbor = struct.pack(">I", len(actions) + 8) + b"cbor" + actions
+        blob = _jumb("c2pa", _jumb("urn:uuid:1", _jumb("c2pa.assertions", _jumb("c2pa.actions.v2", cbor))))
+        names = {t["name"]: t["value"] for t in parse_c2pa(blob)}
+        self.assertEqual(names["c2pa.actions.v2 › actions[0].action"], "c2pa.created")
+        self.assertTrue(names["c2pa.actions.v2 › actions[0].digitalSourceType"].endswith("trainedAlgorithmicMedia"))
+
+
 if __name__ == "__main__":
     unittest.main()

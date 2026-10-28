@@ -14,7 +14,7 @@ STATIC = Path(__file__).parent / "static"
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "LimpaMetadados"
+    server_version = "AntiQueta.IA"
 
     def log_message(self, fmt, *args):  # sem logs com nomes de arquivos
         pass
@@ -56,7 +56,8 @@ class Handler(BaseHTTPRequestHandler):
             if self.path == "/api/clean":
                 keep = self.headers.get("X-Keep-Orientation", "1") == "1"
                 before = core.inspect(data)
-                cleaned = core.clean(data, keep_orientation=keep)
+                keep_icc = self.headers.get("X-Keep-ICC", "1") == "1"
+                cleaned = core.clean(data, keep_orientation=keep, keep_icc=keep_icc)
                 after = core.inspect(cleaned)
                 return self._send(200, {
                     "filename": core.cleaned_name(name, before["format"]),
@@ -73,10 +74,26 @@ class Handler(BaseHTTPRequestHandler):
             self._send(500, {"error": f"Falha ao processar: {exc}"})
 
 
+class Server(ThreadingHTTPServer):
+    # No Windows, SO_REUSEADDR deixa dois processos ouvirem a mesma porta.
+    allow_reuse_address = False
+
+
+def _bind(host, port):
+    """Usa a porta pedida; se estiver ocupada, tenta as seguintes e por fim uma livre qualquer."""
+    for p in [*range(port, port + 10), 0]:
+        try:
+            return Server((host, p), Handler)
+        except OSError:
+            continue
+    raise OSError("nenhuma porta livre")
+
+
 def serve(host="127.0.0.1", port=8765, open_browser=True):
-    httpd = ThreadingHTTPServer((host, port), Handler)
-    url = f"http://{host}:{port}/"
-    print(f"Limpa Metadados rodando em {url}  (Ctrl+C para sair)")
+    httpd = _bind(host, port)
+    url = f"http://{host}:{httpd.server_address[1]}/"
+    print(f"AntiQueta.IA rodando em {url}")
+    print("Para encerrar, feche esta janela (ou Ctrl+C).")
     if open_browser:
         webbrowser.open(url)
     try:

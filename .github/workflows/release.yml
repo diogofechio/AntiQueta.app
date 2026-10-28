@@ -1,0 +1,52 @@
+# Gera os executáveis e publica no Release quando uma tag v* é enviada (ex.: v1.0.0).
+# Também pode ser rodado à mão pela aba Actions; nesse caso os arquivos ficam só como artefatos.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            asset: AntiQueta.IA-windows.exe
+          - os: macos-latest
+            asset: AntiQueta.IA-macos.zip
+          - os: ubuntu-latest
+            asset: AntiQueta.IA-linux.tar.gz
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyinstaller pillow
+      - run: python -m unittest discover -s tests -t .
+      - run: python build.py
+
+      - name: Empacotar (Windows)
+        if: runner.os == 'Windows'
+        run: Move-Item dist/AntiQueta.IA.exe dist/${{ matrix.asset }}
+      - name: Empacotar (macOS)
+        if: runner.os == 'macOS'
+        run: cd dist && ditto -c -k --keepParent AntiQueta.IA ${{ matrix.asset }}
+      - name: Empacotar (Linux)
+        if: runner.os == 'Linux'
+        run: cd dist && chmod +x AntiQueta.IA && tar czf ${{ matrix.asset }} AntiQueta.IA
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: dist/${{ matrix.asset }}
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/${{ matrix.asset }}

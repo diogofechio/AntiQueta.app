@@ -24,6 +24,7 @@ AI_VALUE = [
     (r"\bImagen\b|\bGemini\b|SynthID|Nano ?Banana", "Assinatura do Google"),
     (r"Bing Image Creator|Microsoft Designer|\bCopilot\b", "Assinatura da Microsoft"),
     (r"Meta AI|Imagine with Meta", "Assinatura da Meta"),
+    (r"\bClaude\b|Anthropic", "Assinatura da Anthropic (Claude)"),
     (r"\bGrok\b|Leonardo\.?ai|Ideogram|FLUX\.?1|\bRunway\b|\bKling\b|Recraft", "Assinatura de gerador de imagens"),
     (r"Galaxy AI|Generative Edit|Magic Editor|Photo Assist", "Edição com IA no celular"),
 ]
@@ -44,6 +45,8 @@ LOCATION = re.compile(
 
 def classify(t):
     name, value = t["name"], t["value"]
+    if t.get("warning"):
+        return _set(t, "ai", "Marca d'água nos pixels: remover metadados não apaga")
     for pattern, reason in AI_VALUE:
         if pattern.search(value):
             return _set(t, "ai", reason)
