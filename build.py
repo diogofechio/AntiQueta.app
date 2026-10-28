@@ -12,7 +12,7 @@ import PyInstaller.__main__
 ROOT = Path(__file__).parent
 args = [
     str(ROOT / "antiqueta.py"),
-    "--name", "AntiQueta.IA",
+    "--name", "AntiQueta",
     "--onefile",
     "--clean",
     "--noconfirm",

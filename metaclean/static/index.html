@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AntiQueta.IA · Remova metadados e o selo "Feito com IA"</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f5bea' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1'/%3E%3Cpath d='M3 21 21 3' stroke='%23a1300c'/%3E%3C/svg%3E">
+<title>AntiQueta.app · Remova metadados e o selo "Feito com IA"</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%2316181d'/%3E%3Cg transform='translate(128 128) scale(.94) translate(-128 -128)'%3E%3Cpath fill='%23fff' fill-rule='evenodd' d='M16 122 L80 58 H152 L117.70 186 H80 Z M86 122 A14 14 0 1 0 58 122 A14 14 0 1 0 86 122 Z'/%3E%3Cpath fill='%236f8fff' d='M174 68 H224 A16 16 0 0 1 240 84 V180 A16 16 0 0 1 224 196 H139.70 Z'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   :root {
     --bg: #f6f7f9; --card: #ffffff; --text: #16181d; --muted: #5d6470; --line: #e3e6eb;
@@ -21,13 +21,15 @@
     }
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   main { max-width: 920px; margin: 0 auto; padding: 32px 16px 64px; }
-  h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; }
-  h1 .logo { width: 30px; height: 30px; flex: none; color: var(--accent); }
-  h1 .logo .cut { stroke: var(--ai); }
-  h1 .ia { color: var(--accent); }
+  h1 { margin: 0; line-height: 0; }
+  h1 .logo { height: 52px; width: auto; max-width: 100%; }
+  .logo .ink { fill: var(--text); }
+  .logo .tint { fill: var(--accent); }
+  .byline { color: var(--muted); font-size: 13px; margin: 2px 0 18px 4px; }
   .tagline { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
   .lead { color: var(--muted); margin: 0 0 24px; }
   .drop { border: 2px dashed var(--line); border-radius: 14px; background: var(--card);
@@ -81,13 +83,14 @@
 <body>
 <main>
   <h1>
-    <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
-      <circle cx="7.5" cy="7.5" r="1"/>
-      <path class="cut" d="M3 21 21 3"/>
+    <svg class="logo" viewBox="10 52 878 152" role="img" aria-label="AntiQueta.app">
+      <path class="ink" fill-rule="evenodd" d="M16 122 L80 58 H152 L117.70 186 H80 Z M86 122 A14 14 0 1 0 58 122 A14 14 0 1 0 86 122 Z"/>
+      <path class="tint" d="M174 68 H224 A16 16 0 0 1 240 84 V180 A16 16 0 0 1 224 196 H139.70 Z"/>
+      <path class="ink" d="M292.5625 170.0H313.3125L320.0625 149.6875H354.875L361.375 170.0H382.6875L350.0 76.875H325.25ZM325.25 134.3125 328.4375 124.6875C331.4375 115.1875 334.3125 105.6875 337.6875 94.125C341.0 105.6875 343.875 115.1875 346.75 124.6875L349.875 134.3125Z M406.97 133.3125C406.97 123.0625 412.2825 118.5 419.9075 118.5C427.595 118.5 432.0325 123.1875 432.0325 132.0625V170.0H450.4075V128.6875C450.4075 112.0 441.345 102.625 427.2825 102.625C417.7825 102.625 411.095 106.875 406.6575 114.375V104.0H388.5325V170.0H406.97Z M500.1275 104.0H486.6275V86.0H468.19V104.0H456.815V118.4375H468.19V152.5C468.19 164.5 474.8775 170.0 489.3775 170.0H500.1275V155.5625H493.065C488.065 155.5625 486.6275 154.125 486.6275 149.625V118.4375H500.1275Z M508.0975 170.0H526.535V104.0H508.0975ZM517.285 95.6875C523.3475 95.6875 527.785 91.5 527.785 85.875C527.785 80.25 523.3475 76.0625 517.285 76.0625C511.2225 76.0625 506.785 80.25 506.785 85.875C506.785 91.5 511.2225 95.6875 517.285 95.6875Z"/>
+      <path class="tint" d="M579.5675 171.5C585.38 171.5 590.88 170.5 595.88 168.625L603.0675 177.75H620.5675L607.63 161.6875C617.4425 153.4375 623.505 140.25 623.505 123.5C623.505 93.8125 604.63 75.375 579.5675 75.375C554.505 75.375 535.6925 93.8125 535.6925 123.5C535.6925 153.0 554.505 171.5 579.5675 171.5ZM572.13 138.0 584.38 154.0625C582.8175 154.375 581.255 154.5 579.5675 154.5C565.1925 154.5 555.0675 143.25 555.0675 123.5C555.0675 103.625 565.1925 92.375 579.5675 92.375C593.9425 92.375 604.13 103.625 604.13 123.5C604.13 134.25 601.13 142.5 596.0675 147.8125L588.38 138.0Z M655.85 171.375C665.35 171.375 672.0375 167.125 676.475 159.625V170.0H694.5375V104.0H676.1625V140.6875C676.1625 150.9375 670.85 155.5 663.225 155.5C655.5375 155.5 651.1 150.8125 651.1 141.9375V104.0H632.6625V145.3125C632.6625 162.0 641.7875 171.375 655.85 171.375Z M736.445 171.5C752.445 171.5 765.195 162.375 767.6325 149.25H750.82C749.1325 154.375 744.195 157.6875 737.0075 157.6875C727.32 157.6875 721.695 151.375 721.3825 141.625H768.32V136.6875C768.32 116.5625 755.2575 102.5 735.82 102.5C716.8825 102.5 703.445 116.9375 703.445 137.0625C703.445 157.125 716.445 171.5 736.445 171.5ZM721.5075 129.875C722.5075 121.625 727.945 116.5 736.195 116.5C744.5075 116.5 750.0075 121.625 750.945 129.875Z M814.8525 104.0H801.3525V86.0H782.915V104.0H771.54V118.4375H782.915V152.5C782.915 164.5 789.6025 170.0 804.1025 170.0H814.8525V155.5625H807.79C802.79 155.5625 801.3525 154.125 801.3525 149.625V118.4375H814.8525Z M843.01 171.125C853.135 171.125 858.8225 167.125 862.3225 160.6875H862.5725V170.0H880.5725V125.25C880.5725 111.125 870.1975 102.625 852.135 102.625C834.01 102.625 823.26 111.25 822.4475 124.875H839.76C840.1975 119.8125 844.6975 116.3125 851.5725 116.3125C858.3225 116.3125 862.385 119.6875 862.385 124.5625V125.0C862.385 129.25 858.135 129.8125 846.0725 131.0C832.3225 132.25 820.3225 136.5 820.3225 151.375C820.3225 164.5625 829.8225 171.125 843.01 171.125ZM848.135 158.3125C841.9475 158.3125 837.9475 155.5625 837.9475 150.875C837.9475 145.625 842.9475 143.1875 849.26 142.25C855.1975 141.3125 860.385 140.4375 862.51 139.25V145.875C862.51 153.0 857.01 158.3125 848.135 158.3125Z"/>
     </svg>
-    <span>AntiQueta<span class="ia">.IA</span></span>
   </h1>
+  <p class="byline">by Diogo Fechio</p>
   <p class="tagline">Tire a etiqueta das suas imagens.</p>
   <p class="lead">Remova EXIF, GPS, IPTC, XMP e credenciais C2PA ("Feito com IA") das suas imagens, sem recomprimir nem alterar os pixels. Tudo roda no seu computador.</p>
 

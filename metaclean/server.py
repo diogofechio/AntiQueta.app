@@ -14,7 +14,7 @@ STATIC = Path(__file__).parent / "static"
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "AntiQueta.IA"
+    server_version = "AntiQueta.app"
 
     def log_message(self, fmt, *args):  # sem logs com nomes de arquivos
         pass
@@ -92,7 +92,7 @@ def _bind(host, port):
 def serve(host="127.0.0.1", port=8765, open_browser=True):
     httpd = _bind(host, port)
     url = f"http://{host}:{httpd.server_address[1]}/"
-    print(f"AntiQueta.IA rodando em {url}")
+    print(f"AntiQueta.app rodando em {url}")
     print("Para encerrar, feche esta janela (ou Ctrl+C).")
     if open_browser:
         webbrowser.open(url)

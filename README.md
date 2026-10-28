@@ -1,4 +1,7 @@
-# AntiQueta.IA
+<p align="center"><img src="assets/logo.svg" alt="AntiQueta.app" width="420"></p>
+<p align="center">by Diogo Fechio</p>
+
+# AntiQueta.app
 
 **Tire a etiqueta das suas imagens.** Remove o selo "Feito com IA" (C2PA), localização
 GPS, dados do aparelho e demais metadados (EXIF, IPTC, XMP, textos de PNG) **sem
@@ -86,7 +89,7 @@ Testes: `python3 -m unittest discover -s tests -t .` (com `pip install pillow`).
 ## Gerar o executável
 
 Localmente: `pip install pyinstaller` e `python build.py` (o resultado fica em `dist/`).
-Se existir `assets/icone.ico` (Windows) ou `assets/icone.icns` (macOS), ele vira o ícone.
+O ícone vem de `assets/icone.ico` (Windows) e `assets/icone.icns` (macOS); para regerá-los a partir do desenho, rode `python assets/gerar_icone.py` (precisa do Pillow).
 
 Para publicar uma versão nova, crie e envie uma tag:
 

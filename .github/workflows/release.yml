@@ -34,13 +34,13 @@ jobs:
 
       - name: Empacotar (Windows)
         if: runner.os == 'Windows'
-        run: Move-Item dist/AntiQueta.IA.exe dist/${{ matrix.asset }}
+        run: Move-Item dist/AntiQueta.exe dist/${{ matrix.asset }}
       - name: Empacotar (macOS)
         if: runner.os == 'macOS'
-        run: cd dist && ditto -c -k --keepParent AntiQueta.IA ${{ matrix.asset }}
+        run: cd dist && ditto -c -k --keepParent AntiQueta ${{ matrix.asset }}
       - name: Empacotar (Linux)
         if: runner.os == 'Linux'
-        run: cd dist && chmod +x AntiQueta.IA && tar czf ${{ matrix.asset }} AntiQueta.IA
+        run: cd dist && chmod +x AntiQueta && tar czf ${{ matrix.asset }} AntiQueta
 
       - uses: actions/upload-artifact@v4
         with:
